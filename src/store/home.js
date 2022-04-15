@@ -36,7 +36,7 @@ const mutations = {
 // 修改数据
     RECEIVE_CATEGORYLIST(state,categoryList)
     {
-        state.categoryList = categoryList;
+        state.categoryList = categoryList.slice(0,15);
     },
     RECEIVE_BANNERLIST(state,bannerList)
     {

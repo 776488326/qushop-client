@@ -5,7 +5,7 @@ import store from '@/store'
 // 创建axios实例进行二次封装
 
 const service = axios.create({
-    baseURL : '/api',
+    baseURL : '/local',
     timeout : 10000
 })
 
@@ -15,12 +15,6 @@ service.interceptors.request.use(function(config){
     // 此处一般用于添加额外的功能，或者给请求头添加需要的数据
 
     nprogress.start();
-    // 配置用户临时ID
-    let userTempId = store.state.user.userTempId
-    if(userTempId)
-    {
-        config.headers.userTempId = userTempId
-    }
     // 请求头中配置token
     let token = store.state.user.token
     if(token){
@@ -36,7 +30,6 @@ service.interceptors.response.use(function(response){
     // 添加响应处理
     // response 就是响应报文
     nprogress.done();
-    
     return response.data
 },function (error) {
     // 停止进度条 

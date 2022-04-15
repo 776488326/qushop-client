@@ -3,7 +3,7 @@
     <!-- 登录 -->
     <div class="login_form">
       <div class="login_title">
-        趣&nbsp购&nbsp物
+        <pre>趣 购 物</pre>
       </div>
       <div class="login_content">
         <input type="counter" placeholder="请输入您的账号" v-model="counter">
@@ -17,7 +17,7 @@
         </div>
       </div>
       <div class="login_footer">
-        <button @click="login">登&nbsp&nbsp录</button>
+        <button @click="login"><pre>登  录</pre></button>
       </div>
     </div>
   </div>
@@ -37,12 +37,25 @@ export default {
     async login() {
       let { counter, password } = this;
       if (counter && password) {
-        try {
-          await this.$store.dispatch("loginUser", { counter, password });
-          this.$router.push("/");
-        } catch (error) {
-          alert(error.message);
-        }
+        await this.$store.dispatch("loginUser", { username: counter, password }).then(rel=>{
+          if(rel.errno===200){
+            this.$message({
+              type: "success",
+              message: "登录成功，即将前往首页"
+            })
+            
+            this.$router.push("/");
+          }
+          else{
+            this.$message({
+              type: "warning",
+              message: rel.msg
+            })
+          }
+        }).catch(err=>{
+          this.$message.console.error("登录失败");
+        })
+      
       }
       else{
         this.$message(
@@ -134,9 +147,8 @@ export default {
           border: none;
           border-bottom: 1px solid #f70;
           &:hover{
-            background-color: @fontcolor;
-            border-color: rgba(0, 0, 0, 0);
-            color: #f7f7f7;
+            border-color: @fontcolor;
+            color: #f70;
           }
         }
       }

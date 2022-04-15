@@ -27,15 +27,7 @@ const state = {
     // 异步操作
         async registerUser({commit},userInfo){
             const result = await reqUserRegister(userInfo)
-            console.log(result);
-            if(result.code === 200)
-            {
-                return 'ok'
-            }
-            else
-            {
-                return Promise.reject(new Error('faild'))
-            }
+            return result;
         },
         async getCheckCode({commit},phonenum)
         {
@@ -55,12 +47,8 @@ const state = {
             {
                 commit('RECEIVE_TOKEN',result.data.token)
                 localStorage.setItem('TOKEN',result.data.token)
-                return 'ok'
             }
-            else
-            {
-                return Promise.reject(new Error('faild'))
-            }
+            return result;
         },
         async reqGetUserInfo({commit}){
             try {

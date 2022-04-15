@@ -2,11 +2,11 @@
   <div class="home">
     <typenav></typenav>
     <listContainer></listContainer>
-    <My></My>
     <recommend></recommend>
     <rank></rank>
     <like></like>
     <floor v-for="(floor) in floorList" :key="floor.id" :floor='floor'></floor>
+    <My></My>
     <brand></brand>
   </div>
 </template>

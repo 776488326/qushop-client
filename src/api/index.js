@@ -1,5 +1,6 @@
 import request from './ajax'
 import mockAjax from './mockAjax'
+import localApi from "./localApi"
 // 接口请求函数
 
 // axios的使用 函数，对象
@@ -87,8 +88,8 @@ export const reqDeleteShopCart = (skuId) =>{
 
 // 请求注册用户
 export const reqUserRegister = (userInfo)=>{
-    request({
-        url: '/user/passport/register',
+    return localApi({
+        url: '/user/reg',
         method:'post',
         data: userInfo
     })
@@ -102,8 +103,8 @@ export const reqCheckCode = (phone)=>{
 }
 // 请求用户登录
 export const reqUserLogin = (userInfo)=>{
-    return request({
-        url: `/user/passport/login`,
+    return localApi({
+        url: `/user/login`,
         method:'post',
         data:userInfo
     })
@@ -111,8 +112,8 @@ export const reqUserLogin = (userInfo)=>{
 
 // 获取用户信息
 export const reqGetUserInfo = ()=>{
-    return request({
-        url:'/user/passport/auth/getUserInfo',
+    return localApi({
+        url:'/user/personalMsg',
         method:'get'
     })
 }

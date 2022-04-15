@@ -2,24 +2,12 @@
   <!-- 商品排行 -->
   <div class="rank">
     <div class="tab">
-      <div class="tab-tit clearfix">
-        <a href="javascript:;" class="on">
-          <p class="img">
-            <i></i>
-          </p>
-          <p class="text">热卖排行</p>
+      <div class="tab-tit">
+        <a href="javascript:;" class="hot">
+          <p class="text">热门推荐</p>
         </a>
-        <a href="javascript:;">
-          <p class="img">
-            <i></i>
-          </p>
-          <p class="text">特价排行</p>
-        </a>
-        <a href="javascript:;">
-          <p class="img">
-            <i></i>
-          </p>
-          <p class="text">新品排行</p>
+        <a href="javascript:;" class="change">
+          <p class="text">换一换</p>
         </a>
       </div>
     </div>
@@ -104,6 +92,7 @@ export default {
     display: flex;
     flex-direction: column;
     .tab-tit {
+      position: relative;
       background-color: rgba(200,200,200,.3);
       display: flex;
       justify-content: start;
@@ -118,13 +107,23 @@ export default {
         padding: 0 20px;
         float: left;
         text-decoration: none;
-        font-size: 16px;
-        color: #999;
+        font-size: 20px;
       }
 
-      .on {
+      .hot {
+        font-weight: bold;
         margin-left: -20px;
         color: #000;
+      }
+      .change{
+        color: #666;
+        position: absolute;
+        right: -10px;
+        font-size: 14px;
+        &:hover {
+          color: #000 !important;
+          transform: scale(1.1);
+        }
       }
     }
   }

@@ -75,7 +75,7 @@ export default {
         font-size: 20px;
       }
       .fr {
-        font-size: 16px;
+        font-size: 14px;
         float: right;
         text-decoration: none;
         &:hover {

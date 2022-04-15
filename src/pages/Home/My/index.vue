@@ -1,7 +1,7 @@
 <template>
   <div class="my">
     <div class="header">
-        我的收藏
+        手机专区
     </div>
     <div class="container">
         <ul class="shop-list">

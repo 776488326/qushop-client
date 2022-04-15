@@ -388,8 +388,10 @@
       .mainCon {
         overflow: hidden;
         margin: 20px 0;
-        padding: 30px 0px;
+        padding: 30px 10px;
         box-sizing: border-box;
+        box-shadow: 0 0 2px rgba(168, 165, 160, 0.8);
+        border-radius: 20px;
         .previewWrap {
           float: left;
           width: 400px;
