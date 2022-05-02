@@ -2,7 +2,9 @@
   <div class="register-container">
     <div class="header">
       <h3>
-        注册新用户
+        <span>
+          <router-link to="/home" class="title">趣购物商城</router-link>
+        </span>
         <span class="go"
           >我有账号，去 <router-link to="/login">登录</router-link>
         </span>
@@ -13,7 +15,7 @@
       <div class="title">
         <h3>趣购物</h3>
       </div>
-      <div class="content">
+      <div class="contents">
         <input type="text" placeholder="请输入您的账号" v-model="username" />
         <input
           type="password"
@@ -46,7 +48,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapActions } from 'vuex';
 export default {
   name: "Register",
   data() {
@@ -59,23 +61,22 @@ export default {
     };
   },
   methods: {
+    ...mapActions("user",["registerUser"]),
     async register() {
       let { phone, password, email, username, checkpwd } = this;
       if (phone && password && email && username && checkpwd === password) {
         try {
-          const result = await this.$store.dispatch("registerUser", {
+          const result = await this.registerUser({
             phone,
             password,
             username,
             email,
           });
-          console.log(result);
-          if (result.errno === 200) {
+          if (result.code === 200) {
             this.$message({
               type: "success",
               message: "注册成功，即将前往登陆页面！",
             });
-            console.log('111')
             this.$router.push("/login");
           } else {
             this.$message.error(result.msg);
@@ -86,29 +87,22 @@ export default {
       } else {
         alert("error");
       }
-    },
-    async getCode() {
-      try {
-        this.checkcode = await this.$store.dispatch(
-          "getCheckCode",
-          this.phonenum
-        );
-      } catch (error) {
-        alert(error.message);
-      }
-    },
+    }
   },
-  computed: {},
+  computed: {
+    
+  },
 };
 </script>
 
 <style lang="less" scoped>
 @fontcolor: #777;
 .register-container {
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  align-items: center;
   .header {
     width: 100%;
     height: 70px;
@@ -121,11 +115,15 @@ export default {
       padding: 6px 15px;
       color: #333;
       font-size: 20px;
+      display: flex;
+      justify-content: space-between;
       span {
         font-size: 14px;
-        float: right;
-
+        .title{
+          font-size: 24px;
+        }
         a {
+          text-decoration: none;
           color: #f70;
         }
       }
@@ -145,17 +143,16 @@ export default {
     .title {
       box-sizing: border-box;
       width: 100%;
-      padding: 20px;
       font-size: 18px;
       text-align: center;
       color: @fontcolor;
     }
-    .content {
+    .contents {
       box-sizing: border-box;
-      margin: 50px auto;
       width: 80%;
       display: flex;
       flex-direction: column;
+      align-items: center;
       color: @fontcolor;
       input {
         margin: 20px;

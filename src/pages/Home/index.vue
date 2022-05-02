@@ -1,42 +1,71 @@
 <template>
   <div class="home">
-    <typenav></typenav>
-    <listContainer></listContainer>
-    <recommend></recommend>
-    <rank></rank>
-    <like></like>
-    <floor v-for="(floor) in floorList" :key="floor.id" :floor='floor'></floor>
-    <My></My>
-    <brand></brand>
+    <Swiper v-bind:swiperList="siteInfo.swiperList" class="swiper" view="big"></Swiper>
+    <rank class="rank"></rank>
+    <BestSelect v-bind:bestAdvImg="siteInfo.bestAdvImg" class="best"></BestSelect>
+    <brand class="brand" v-bind:brandList="brandList"></brand>
   </div>
 </template>
 
 <script>
-import listContainer from "../Home/ListContainer"
-import recommend from '../Home/Recommend'
 import rank from '../Home/Rank'
-import like from '../Home/Like'
-import floor from '../Home/Floor'
 import brand from '../Home/Brand'
-import My from "../Home/My"
-
-import { mapState } from 'vuex'
-
+import BestSelect from "../Home/BestSelect"
+import { mapActions, mapState } from 'vuex'
 
 export default {
     name : "",
-    components : {listContainer,recommend,rank,like,floor,brand,My},
-    mounted(){
-      this.$store.dispatch('getFloorList');
+    components : {rank,brand,BestSelect},
+    data(){
+      return{
+      }
+    },
+    created(){
+      this.getSiteInfo();
+    },
+    methods:{
+      ...mapActions("site",["getSiteInfo"])
     },
     computed : {
-      ...mapState({
-        floorList : state => state.home.floorList
-      })
+      ...mapState("site",["siteInfo","brandList"])
     }
 }
 </script>
 
 <style lang="less" scoped>
-  
+  .home{
+    width: 1200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    margin: auto;
+    .swiper{
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #ff770088;
+      padding: 2px;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .rank{
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #ff770088;
+      border-radius: 4px;
+    }
+    .best{
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #ff770088;
+      border-radius: 4px;
+    }
+    .brand{
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #ff770088;
+      border-radius: 4px;
+      padding: 10px;
+    }
+  }
 </style>

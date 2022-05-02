@@ -7,22 +7,13 @@ Vue.config.productionTip = false
 
 import router from "@/router"
 import store from '@/store'
-import '@/mock/mockServer'  //引入使其生效
-import 'swiper/css/swiper.css' //引入swiper css
 import * as API from '@/api'
 
 Vue.use(ElementUI);
 
-import { requestCategoryList } from "@/api"
-requestCategoryList()
 // 全局注册type-nav
-import typenav from "@/components/typeNav"
-Vue.component('typenav',typenav);
-import slideLoop from "@/components/SlideLoop"
-Vue.component('slideLoop',slideLoop);
-import Pagination from "@/components/Pagination"
-Vue.component('Pagination',Pagination);
-
+import Swiper from "@/components/swiper"
+Vue.component("Swiper",Swiper);
 new Vue({
   el : "#app",
   beforeCreate(){

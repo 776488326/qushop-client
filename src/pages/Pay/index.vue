@@ -1,240 +1,195 @@
 <template>
-  <div class="pay-main">
-    <div class="pay-container">
-      <div class="checkout-tit">
-        <h4 class="tit-txt">
-          <span class="success-icon"></span>
-          <span class="success-info">订单提交成功，请您及时付款，以便尽快为您发货~~</span>
-        </h4>
-        <div class="paymark">
-          <span class="fl">请您在提交订单<em class="orange time">4小时</em>之内完成支付，超时订单会自动取消。订单号：<em>145687</em></span>
-          <span class="fr"><em class="lead">应付金额：</em><em class="orange money">￥17,654</em></span>
-        </div>
-      </div>
-      <div class="checkout-info">
-        <h4>重要说明：</h4>
-        <ol>
-          <li>尚品汇商城支付平台目前支持<span class="zfb">支付宝</span>支付方式。</li>
-          <li>其它支付渠道正在调试中，敬请期待。</li>
-          <li>为了保证您的购物支付流程顺利完成，请保存以下支付宝信息。</li>
-        </ol>
-        <h4>支付宝账户信息：（很重要，<span class="save">请保存！！！</span>）</h4>
-        <ul>
-          <li>支付帐号：11111111</li>
-          <li>密码：111111</li>
-          <li>支付密码：111111</li>
-        </ul>
-      </div>
-      <div class="checkout-steps">
-        <div class="step-tit">
-          <h5>支付平台</h5>
-        </div>
-        <div class="step-cont">
-          <ul class="payType">
-            <li><img src="./images/pay2.jpg"></li>
-            <li><img src="./images/pay3.jpg"></li>
-          </ul>
-
-        </div>
-        <div class="hr"></div>
-
-        <div class="payshipInfo">
-          <div class="step-tit">
-            <h5>支付网银</h5>
+  <div class="orderInfo">
+    <div class="addressInfo">
+      <h2>选择收货地址</h2>
+      <div class="cards">
+        <el-card class="box-card" :class="{active:isSel==index}" @click.native="selAddress(index)"  v-for="(item,index) in userInfo.addressList" :key="index" shadow="hover">
+          <div slot="header" class="clearfix">
+            <span>收货人（{{item.name}}）</span>
           </div>
-          <div class="step-cont">
-            <ul class="payType">
-              <li><img src="./images/pay10.jpg"></li>
-              <li><img src="./images/pay11.jpg"></li>
-              <li><img src="./images/pay12.jpg"></li>
-              <li><img src="./images/pay13.jpg"></li>
-              <li><img src="./images/pay14.jpg"></li>
-              <li><img src="./images/pay15.jpg"></li>
-              <li><img src="./images/pay16.jpg"></li>
-              <li><img src="./images/pay17.jpg"></li>
-              <li><img src="./images/pay18.jpg"></li>
-              <li><img src="./images/pay19.jpg"></li>
-              <li><img src="./images/pay20.jpg"></li>
-              <li><img src="./images/pay21.jpg"></li>
-              <li><img src="./images/pay22.jpg"></li>
-
-            </ul>
+          <div class="text">
+            <span>地址：{{item.address}}</span>
+            <span>手机号：{{item.phone}}</span>
           </div>
-
-        </div>
-        <div class="hr"></div>
-
-        <div class="submit">
-          <router-link class="btn" to="/paysuccess">立即支付</router-link>
-        </div>
-        <div class="otherpay">
-          <div class="step-tit">
-            <h5>其他支付方式</h5>
-          </div>
-          <div class="step-cont">
-            <span><a href="weixinpay.html" target="_blank">微信支付</a></span>
-            <span>中国银联</span>
-          </div>
-        </div>
+        </el-card>
       </div>
     </div>
+    <div class="shopInfo">
+      <h2>确认订单信息</h2>
+      <el-table
+        ref="cartTable"
+        :data="selectInfo.shopList"
+        tooltip-effect="light"
+        :header-cell-style="{ background: 'rgba(0,0,0,0.2)' }"
+        :row-style="{ background: 'none' }"
+        style="width: 100%"
+        @selection-change="selChange"
+      >
+        <el-table-column prop="skuName" label="商品"> </el-table-column>
+        <el-table-column prop="skuImg" label="图片">
+          <template slot-scope="scope">
+            <img :src="scope.row.skuImg" alt="" width="100px" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="count" label="数量"> </el-table-column>
+        <el-table-column label="总价">
+          <template slot-scope="scope">
+            <span style="color: #f70">{{
+              scope.row.price * scope.row.count
+            }}</span>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="submit">
+        <el-card class="submitBox">
+          <span>总计：<i>{{selectInfo.count}}</i>件</span>
+          <span>实付款¥：<i>{{selectInfo.total}}</i></span>
+          <span>收货人：<i>{{userInfo.addressList[isSel].name}} {{userInfo.addressList[isSel].phone}}</i></span>
+          <span>收货地址：<i>{{userInfo.addressList[isSel].address}}</i></span>
+        </el-card>
+        <el-button type="danger" @click="pay">立即支付</el-button>
+      </div>
+    </div>
+    <el-dialog
+      title="扫码支付"
+      :visible.sync="isDisplay"
+      width="30%"
+      center
+      open="open">
+      <img :src="url" style="width:100%">
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="isDisplay = false">取消支付</el-button>
+        <el-button type="primary" @click="success">已完成支付</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-  export default {
-    name: 'Pay',
+import { mapActions, mapState } from 'vuex';
+import QRCode from 'qrcode';
+const generateQR = async text => {
+  try {
+    return await QRCode.toDataURL(text);
+  } catch (err) {
+    console.error(err)
   }
-</script>
-
-<style lang="less" scoped>
-  .pay-main {
-    margin-bottom: 20px;
-
-    .pay-container {
-      margin: 0 auto;
-      width: 1200px;
-
-      a:hover {
-        color: #4cb9fc;
-      }
-
-      .orange {
-        color: #e1251b;
-      }
-
-      .money {
-        font-size: 18px;
-      }
-
-      .zfb {
-        color: #e1251b;
-        font-weight: 700;
-      }
-
-      .checkout-tit {
-        padding: 10px;
-
-        .tit-txt {
-          font-size: 14px;
-          line-height: 21px;
-
-          .success-icon {
-            width: 30px;
-            height: 30px;
-            display: inline-block;
-            background: url(./images/icon.png) no-repeat 0 0;
-          }
-
-          .success-info {
-            padding: 0 8px;
-            line-height: 30px;
-            vertical-align: top;
-          }
-        }
-
-        .paymark {
-          overflow: hidden;
-          line-height: 26px;
-          text-indent: 38px;
-
-          .fl {
-            float: left;
-          }
-
-          .fr {
-            float: right;
-
-            .lead {
-              margin-bottom: 18px;
-              font-size: 15px;
-              font-weight: 400;
-              line-height: 22.5px;
-            }
-          }
-        }
-      }
-
-      .checkout-info {
-        padding-left: 25px;
-        padding-bottom: 15px;
-        margin-bottom: 10px;
-        border: 2px solid #e1251b;
-
-        h4 {
-          margin: 9px 0;
-          font-size: 14px;
-          line-height: 21px;
-          color: #e1251b;
-        }
-
-        ol {
-          padding-left: 25px;
-          list-style-type: decimal;
-          line-height: 24px;
-          font-size: 14px;
-        }
-
-        ul {
-          padding-left: 25px;
-          list-style-type: disc;
-          line-height: 24px;
-          font-size: 14px;
-        }
-      }
-
-      .checkout-steps {
-        border: 1px solid #ddd;
-        padding: 25px;
-
-        .hr {
-          height: 1px;
-          background-color: #ddd;
-        }
-
-        .step-tit {
-          line-height: 36px;
-          margin: 15px 0;
-        }
-
-        .step-cont {
-          margin: 0 10px 12px 20px;
-
-          ul {
-            font-size: 0;
-
-            li {
-              margin: 2px;
-              display: inline-block;
-              padding: 5px 20px;
-              border: 1px solid #ddd;
-              cursor: pointer;
-              line-height: 18px;
-            }
-          }
-        }
-      }
-
-      .submit {
-        text-align: center;
-
-        .btn {
-          display: inline-block;
-          padding: 15px 45px;
-          margin: 15px 0 10px;
-          font: 18px "微软雅黑";
-          font-weight: 700;
-          border-radius: 0;
-          background-color: #e1251b;
-          border: 1px solid #e1251b;
-          color: #fff;
-          text-align: center;
-          vertical-align: middle;
-          cursor: pointer;
-          user-select: none;
-          text-decoration: none;
-        }
+};
+export default {
+  name: "Pay",
+  props: ["selectInfo"],
+  data() {
+    return {
+      isSel:0,
+      isDisplay:false,
+      url:"https://vkceyugu.cdn.bspapp.com/VKCEYUGU-764647c8-fd81-4a31-845f-c0bf285f2096/a617544b-d1b2-4ae6-8ae2-002c6cda06a3.png"
+    }
+  },
+  computed:{
+    ...mapState("user",["userInfo"])
+  },
+  methods:{
+    ...mapActions("order",["createOrder"]),
+    selAddress(index){
+      this.isSel = index;
+      console.log(index);
+    },
+    async pay(){
+      this.url = await generateQR("https://776488326.github.io/");
+      this.isDisplay = true;
+    },
+    async success(){
+      let tradeInfo = {"orderInfo":this.selectInfo,"addressInfo":this.userInfo.addressList[this.isSel],"userId":this.userInfo._id};
+      let res = await this.createOrder(tradeInfo);
+      if(res.code == 200){
+        this.isDisplay = false;
+        this.$router.replace("/paysuccess");
+      }else{
+        this.$message.error("订单创建失败！");
       }
     }
   }
+};
+</script>
+
+<style lang="less" scoped>
+.orderInfo {
+  margin-top: 50px;
+  width: 1200px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  .shopInfo {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    h2{
+      margin-bottom: 30px;
+    }
+    .submit{
+      margin-top: 50px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      .submitBox{
+        width: 500px;
+        display: flex;
+        flex-direction: column;
+        border: solid #f70;
+        span{
+          margin: 10px;
+          display: block;
+        }
+        i{
+          font-size: 16px;
+          color: #f70;
+        }
+      }
+      button{
+        margin: 50px 0px;
+        
+
+      }
+    }
+  }
+  .addressInfo {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    .cards{
+      display: flex;
+      margin: 30px;
+      justify-content: space-evenly;
+      .box-card{
+        min-width: 300px;
+      }
+      .text{
+        display: flex;
+        flex-direction: column;
+        span{
+          margin: 10px 0px;
+        }
+      }
+      &>:hover{
+        cursor: pointer;
+      }
+    }
+    .active{
+      border-color: #f70;
+    }
+  }
+  /deep/.el-table {
+    background: none;
+  }
+  /deep/.el-card{
+    background:none;
+    border: 2px dashed;
+  }
+  .dialog{
+
+    img{
+      text-align: center;
+    }
+  }
+}
 </style>

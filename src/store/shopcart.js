@@ -1,6 +1,6 @@
 import { reqUpdateShopNum,reqShopCartList,reqShopCartState,reqDeleteShopCart} from "@/api"
 const state = {
-    shopcartList: []
+    shopcartList: {}
 }
 const mutations = {
     RECEIVESHOPCARTLIST(state,shopcartList){
@@ -21,8 +21,8 @@ const actions = {
             return Promise.reject(new Error('faild'))
         }
     },
-    async getShopCartList({commit}){
-        const result = await reqShopCartList()
+    async getShopCartList({commit},cartId){
+        const result = await reqShopCartList(cartId) 
         if(result.code === 200)
         {
             commit('RECEIVESHOPCARTLIST',result.data)
@@ -48,8 +48,8 @@ const actions = {
         })
         return Promise.all(promises);
     },
-    async deleteShopCart({commit},skuId){
-        const result = await reqDeleteShopCart(skuId)
+    async deleteShopCart({commit},params){
+        const result = await reqDeleteShopCart(params)
         if(result.code===200)
         {
             return 'ok'
@@ -74,10 +74,11 @@ const actions = {
 }
 const getters = {
     shopcartList(state){
-        return state.shopcartList[0]?state.shopcartList[0].cartInfoList:[] || []
+        return state.shopcartList?state.shopcartList.shopList:[] || []
     }
 }
 export default {
+    namespaced: true,
     state,
     mutations,
     actions,

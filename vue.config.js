@@ -2,13 +2,9 @@ module.exports = {
     lintOnSave: false,
     devServer: {
         proxy: {
-            "/api":{
-                target: "http://39.98.123.211",
-            },
-            "/local":{
+            "/client":{
                 target: "http://localhost:3000",
-                pathRewrite:{"^/local":''}
-            }
+            },
         }
     }
 }

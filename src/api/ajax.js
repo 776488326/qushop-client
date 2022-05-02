@@ -5,7 +5,7 @@ import store from '@/store'
 // 创建axios实例进行二次封装
 
 const service = axios.create({
-    baseURL : '/api',
+    baseURL : '/client',
     timeout : 10000
 })
 

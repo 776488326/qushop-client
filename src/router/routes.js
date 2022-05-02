@@ -3,12 +3,11 @@ import Login from "@/pages/Login"
 import Register from "@/pages/Register"
 import Search from "@/pages/Search"
 import Detail from "@/pages/Detail"
-import AddCartSuccess from "@/pages/AddCartSuccess"
-import shopcart from "@/pages/ShopCart"
-import trade from '@/pages/Trade'
-import pay from '@/pages/Pay'
-import paySuccess from '@/pages/PaySuccess'
-import center from '@/pages/Center'
+import ShopCart from "@/pages/ShopCart"
+import Order from '@/pages/Order'
+import Pay from '@/pages/Pay'
+import PaySuccess from '@/pages/PaySuccess'
+import Center from '@/pages/Center'
 // 向外暴露路由器对象
 export default [
     {
@@ -31,11 +30,12 @@ export default [
     },
     {
         name : "search",
-        path : "/search/:keyword?",
+        path : "/search/:category1Id/:index",
         component : Search,
-        props(route){
-            return {
-                keyword : route.params.keyword,
+        props($route){
+            return{
+                categoryId:$route.params.category1Id||'',
+                index:$route.params.index||""
             }
         }
     },
@@ -44,31 +44,43 @@ export default [
         redirect : '/home'
     },
     {
-        path : "/detail/:goods",
-        component : Detail
-    },
-    {
-        path: '/addcartsuccess',
-        component: AddCartSuccess
+        path : "/detail/:skuId",
+        component : Detail,
+        props($route){
+            return {
+                skuId:$route.params.skuId
+            }
+        }
     },
     {
         path: "/shopcart",
-        component: shopcart
+        component: ShopCart
     },
     {
-        path:'/trade',
-        component:trade
+        path:'/order',
+        component:Order,
+        props($route){
+            return {
+                userId: $route.query.userId
+            }
+        }
     },
     {
         path: '/pay',
-        component:pay
+        component:Pay,
+        props($route){
+            return {
+                selectInfo:$route.query.selectInfo
+            }
+        }
     },
     {
         path:'/paysuccess',
-        component: paySuccess
+        component: PaySuccess
     },
     {
         path:'/center',
-        component: center
+        component: Center
     }
+    
 ]

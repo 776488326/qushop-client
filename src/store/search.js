@@ -1,37 +1,46 @@
 import {requestSearchInfo} from "@/api"
 const state = {
     // 存数据
-    searchInfo : {},
+    searchParams:{
+        searchWord:"",
+        category3IdList:"",
+        limit:8,
+        curPage:1,
+        tradeMarkId:"",
+        sort:1
+    },
+    searchResult : [],
+    count:0
 }
 const mutations = {
     // 修改数据
-    RECEIVE_SEARCHINFO(state,searchInfo){
-        state.searchInfo = searchInfo
+    RECEIVE_SEARCHRESULT(state,data){
+        state.searchResult = data.data;
+        state.count = data.msg;
+    },
+    UPDATESEARCHPARAMS(state,searchParams){
+        Object.assign(state.searchParams,searchParams);
     }
 }
 const actions = {
     // 异步操作
-    async getSearchInfo({commit},searchParams){
-        const result = await requestSearchInfo(searchParams);
+    async getSearchResult({commit}){
+        const result = await requestSearchInfo(state.searchParams);
         if(result.code === 200)
         {
-            commit('RECEIVE_SEARCHINFO',result.data)
+            commit('RECEIVE_SEARCHRESULT',result)
+
+            return result;
         }
+    },
+    setSearchParams({commit},searchParams){
+        commit("UPDATESEARCHPARAMS",searchParams);
     }
 }
 const getters = {
-    // 简化数据操作,如果获取到的数据内部结构比较复杂，则可以在此处先做处理，来简化数据
-    attrsList(state){
-        return state.searchInfo.attrsList || []
-    },
-    goodsList(state){
-        return state.searchInfo.goodsList || []
-    },
-    trademarkList(state){
-        return state.searchInfo.trademarkList || []
-    }
 }
 export default {
+    namespaced: true,
     state,
     mutations,
     actions,
